@@ -1464,3 +1464,18 @@ em.search-keyword {
   list-style: none; }
   .post-copyright li {
     margin: 8px 0; }
+
+.icon-pencil:before {
+  content: "\e905"; }
+
+.icon-camera:before {
+  content: "\e90f"; }
+
+.icon-music:before {
+  content: "\e911"; }
+
+.icon-dice:before {
+  content: "\e915"; }
+
+.icon-book:before {
+  content: "\e91f"; }
