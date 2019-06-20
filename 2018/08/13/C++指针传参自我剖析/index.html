@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="记录成长"><title> | Hugh Bolg</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + 'true';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+  </script></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Hugh Bolg</h1><a id="logo" href="/.">Hugh Bolg</a><p class="description">记录</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/EECS/"><i class="fa icon-pencil"> EECS</i></a><a href="/book/"><i class="fa icon-book"> 书</i></a><a href="/movie/"><i class="fa icon-dice"> 影</i></a><a href="/music/"><i class="fa icon-music"> 音</i></a><a href="/picture/"><i class="fa icon-camera"> 图</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title"></h1><div class="post-meta">Aug 13, 2018</div><div class="post-content"><h4 id="C-指针传参自我剖析"><a href="#C-指针传参自我剖析" class="headerlink" title="C++ 指针传参自我剖析"></a>C++ 指针传参自我剖析</h4><p>结论：指针传递和引用传递都可以用来修改参数的值，不同之处在于，引用传递传递的是自己，只有一个副本，改变的是自己，对形参所有的操作都是在原实参所在的地址进行。指针传递传递会进行自我拷贝，两个副本指向同一地址，改变的是指向地址的内容。对形参所做的操作<br>可能是实参或形参(不进行重新分配内存的情况下)所指向的地址，也可能是形参所在或新建的地址。<br>问题来源：</p>
+<pre>
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+void GenTree(TreeNode * node){
+    node=new TreeNode(1);
+}
+int main()
+{
+    TreeNode * root=NULL;
+    GenTree(root);
+    return 0;
+}
+</pre>
+在如上生成树时，对于本是指针的TreeNode，在函数中给其建立结点，在函数外的root是不会生成树的。将函数改为如下
+~void GenTree(TreeNode * &node){
+    node=new TreeNode(1);
+} ~
+就可以了
+原因分析下：
+对于指针传递，其是可以修改实参的值，但其修改的是该指针指向内存的值。
+上例代码中，虽然也是指针传递的参数，但其在修改时，并不是修改的指向二的内存的值，而是形参
+重新指向的内存的值，这个内存跟实参指向的内存，没有关系，所以root最后还是NULL。而将其换成
+指针的引用之后，也就相当于形参和实参是同一个东西，只是名字不同而已，其所有的处理都是对同一块
+内存的处理。所以形参做任何修改，实参也会变动
+
+当然这里也可以用指针的指针
+<pre>
+void GenTree(TreeNode ** node){
+
+    (*node)=new TreeNode(2);
+}
+int main()
+{
+    TreeNode * root=new TreeNode(1);
+    GenTree(&root);
+    cout<<root->val<<endl; return="" 0;="" }="" <="" pre="">
+</endl;></root-></pre></div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2018/08/27/影《灭绝》/"></a><a class="next" href="/2018/08/11/引用和指针在存放容器的区别/"></a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://yoursite.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/EECS/">EECS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/book/">book</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/movie/">movie</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/21/视觉SLAM十四讲-高翔/">视觉SLAM十四讲-高翔</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/12/看透Spring MVC源码分析与实践/">看透Spring MVC源码分析与实践</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/20190513/">20190513</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/10/20190510/">20190510</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/06/20190506/">20190506</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/27/20190426/">20190426</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/25/20190425/">20190425</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/18/设计模式/">设计模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/08/影 《湮灭》/">影 《湮灭》</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/27/影《灭绝》/">影《灭绝》</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Hugh Bolg.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
